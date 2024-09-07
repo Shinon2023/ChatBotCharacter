@@ -1,0 +1,51 @@
+Token Discord
+เลขา = "MTI3OTgxODgyMDg0Mzg2NDEwNA.Gd69Ji.K1UjBgOngh9zZf3_qukoIZ8fiD7ePZfel015-0"
+Mie Ai = "MTI4MTU1NjIzMDg0NTg5MDU2Mg.Gj_7_F.mAj2Kbakv62X_zUaX2vlALdbRziflWatWo236I"
+Direct Message Bot = "MTI4MTU1ODQ2MTczMzI3Nzc1OA.Gay4Jt.ColCDAu5yApyqkbUTDYfrMrKyxmRTW8GjJ16ds"
+
+OpenAi API = "sk-gpkpEzlVsfezAccpaqhw-qERTjU0cOBfy84vEKbafzT3BlbkFJ9sPPaIpYzQej9PygeM-ETxvGiJ9cJV6RY5rbW731IA"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import discord
+from Model.Mie_Ai_Model import MieAIModel
+
+DISCORD_TOKEN = 'YOUR_DISCORD_TOKEN_HERE'
+
+# กำหนดค่า intents
+intents = discord.Intents.default()
+intents.message_content = True
+
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_ready():
+    print(f'We have logged in as {client.user}')
+
+@client.event
+async def on_message(message):
+    # ตรวจสอบว่าข้อความถูกส่งใน Direct Message (DM) เท่านั้น
+    if isinstance(message.channel, discord.DMChannel):
+        if message.content.strip():
+            try:
+                # เรียกโมเดล MieAIModel เพื่อตอบข้อความของผู้ใช้
+                user_input = message.content
+                response = MieAIModel().call_ai(user_input)
+                await message.channel.send(response)
+            except Exception as e:
+                await message.channel.send(f"เกิดข้อผิดพลาดในการตอบกลับ: {str(e)}")
+        else:
+            await message.channel.send("ข้อความที่ส่งมาว่างเปล่า กรุณาลองใหม่อีกครั้ง")
+
+client.run(DISCORD_TOKEN)
